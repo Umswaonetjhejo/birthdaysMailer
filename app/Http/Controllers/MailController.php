@@ -14,11 +14,11 @@ class MailController extends Controller
     public function index()
     {
         //Get today's day and month
-        //$todayDate = date('m-d');
-        $todayDate = "02-28";//"11-17";
+        $todayDate = date('m-d');
+        //$todayDate = "02-28";//"11-17";
 
         //Check if this year is a leap year
-        $leapYear = 1;//date('L');
+        $leapYear = date('L');
 
         //API variable
         $api_url = "https://interview-assessment-1.realmdigital.co.za/employees";
@@ -35,21 +35,18 @@ class MailController extends Controller
             //Check if each elements of the array has a date of birth
             if(isset($employees[$c]['dateOfBirth']))
             {
+                //Check if an employee's birthday is today and if it's leap year, check if the employee's birth month and February and birthday is on the 29th
                 if(date('m-d', strtotime($employees[$c]['dateOfBirth'])) == $todayDate || ($leapYear == 0 && date('m-d', strtotime($employees[$c]['dateOfBirth'])) == "02-29"))
                 {
                     $stringName .= $employees[$c]['name']." ".$employees[$c]['lastname'].", ";
                 }
 
-//                if($leapYear == 0 && date('m-d', strtotime($employees[$c]['dateOfBirth'])) == "02-29")
-//                {
-//                    $stringName .= $employees[$c]['name']." ".$employees[$c]['lastname'].", ";
-//                }
             }
         }
 
-        dd($stringName);
+        //dd($stringName);
 
-        //return $this->sendMail($stringName);
+        return $this->sendMail($stringName);
     }
 
     public function sendMail($names)
