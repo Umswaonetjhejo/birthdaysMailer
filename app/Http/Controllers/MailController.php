@@ -13,20 +13,50 @@ class MailController extends Controller
 
     public function index()
     {
-        $todayDate = date('Y-m-d');
+        //Get today's day and month
+        //$todayDate = date('m-d');
+        $todayDate = "02-28";//"11-17";
 
+        //Check if this year is a leap year
+        $leapYear = 1;//date('L');
+
+        //API variable
         $api_url = "https://interview-assessment-1.realmdigital.co.za/employees";
 
+        //API call to get the employees
         $employees = Http::get($api_url)->json();
 
-        dd($employees);
+        //String variable to populate with the names of those who's birthday is today.
+        $stringName = "";
+
+        //Loop to get names of those who's birthday is today
+        for($c = 0; $c < count($employees); $c++)
+        {
+            //Check if each elements of the array has a date of birth
+            if(isset($employees[$c]['dateOfBirth']))
+            {
+                if(date('m-d', strtotime($employees[$c]['dateOfBirth'])) == $todayDate || ($leapYear == 0 && date('m-d', strtotime($employees[$c]['dateOfBirth'])) == "02-29"))
+                {
+                    $stringName .= $employees[$c]['name']." ".$employees[$c]['lastname'].", ";
+                }
+
+//                if($leapYear == 0 && date('m-d', strtotime($employees[$c]['dateOfBirth'])) == "02-29")
+//                {
+//                    $stringName .= $employees[$c]['name']." ".$employees[$c]['lastname'].", ";
+//                }
+            }
+        }
+
+        dd($stringName);
+
+        //return $this->sendMail($stringName);
     }
 
-    public function sendMail()
+    public function sendMail($names)
     {
         $data = [
-            'title' => 'Mail from Birthday wishes',
-            'body' => 'This is for testing mail using gmail.'
+            'title' => 'Birthday wishes',
+            'body' => 'Happy Birthday '.$names
         ];
 
         Mail::to("umswaonetjhejo@gmail.com")->send(new SendMail($data));
