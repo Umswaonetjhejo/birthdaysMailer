@@ -15,7 +15,7 @@ class MailController extends Controller
     {
         //Get today's day and month
         $todayDate = date('m-d');
-        //$todayDate = "02-28";//"11-17";
+        //$todayDate = "11-17";
 
         //Check if this year is a leap year
         $leapYear = date('L');
@@ -35,10 +35,18 @@ class MailController extends Controller
             //Check if each elements of the array has a date of birth
             if(isset($employees[$c]['dateOfBirth']))
             {
-                //Check if an employee's birthday is today and if it's leap year, check if the employee's birth month and February and birthday is on the 29th
-                if(date('m-d', strtotime($employees[$c]['dateOfBirth'])) == $todayDate || ($leapYear == 0 && date('m-d', strtotime($employees[$c]['dateOfBirth'])) == "02-29"))
+                //Check if an employee's birthday is today
+                if(date('m-d', strtotime($employees[$c]['dateOfBirth'])) === $todayDate)
                 {
                     $stringName .= $employees[$c]['name']." ".$employees[$c]['lastname'].", ";
+                }
+                else
+                {
+                    //Check if it is leap year and the employee's birth month is February and birthday is on the 29th
+                    if(($leapYear == 0 && $todayDate === "02-28" && date('m-d', strtotime($employees[$c]['dateOfBirth'])) === "02-29"))
+                    {
+                        $stringName .= $employees[$c]['name']." ".$employees[$c]['lastname'].", ";
+                    }
                 }
 
             }
